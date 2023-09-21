@@ -1,0 +1,32 @@
+{
+  "name": "asm-03",
+  "version": "1.0.0",
+  "description": "nodejs - assignment 3",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "author": "Hoang Viet Hung",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "express-validator": "^7.0.1",
+    "filereader": "^0.10.3",
+    "jsonwebtoken": "^9.0.1",
+    "lodash": "^4.17.21",
+    "mongoose": "^7.4.3",
+    "multer": "^1.4.0",
+    "nodemailer": "^6.9.4",
+    "pdfkit": "^0.13.0",
+    "socket.io": "^4.7.2",
+    "usehooks-ts": "^2.9.1",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.4"
+  }
+}
