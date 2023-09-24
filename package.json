@@ -2,10 +2,12 @@
   "name": "asm-03",
   "version": "1.0.0",
   "description": "nodejs - assignment 3",
-  "main": "index.js",
+  "main": "app.ts",
   "scripts": {
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js"
+    "start": "set NODE_ENV=production&& node dist/app.js",
+    "dev": "concurrently \"tsc --watch\" \"nodemon -q dist/app.js\""
   },
   "author": "Hoang Viet Hung",
   "license": "ISC",
@@ -13,11 +15,13 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-validator": "^7.0.1",
     "filereader": "^0.10.3",
     "jsonwebtoken": "^9.0.1",
     "lodash": "^4.17.21",
+    "logrocket": "^5.0.1",
     "mongoose": "^7.4.3",
     "multer": "^1.4.0",
     "nodemailer": "^6.9.4",
@@ -27,6 +31,15 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "nodemon": "^1.19.4"
+    "@types/bcryptjs": "^2.4.4",
+    "@types/express": "^4.17.18",
+    "@types/jsonwebtoken": "^9.0.3",
+    "@types/mongoose": "^5.11.97",
+    "@types/multer": "^1.4.7",
+    "@types/node": "^20.6.4",
+    "@types/nodemailer": "^6.4.11",
+    "nodemon": "^1.19.4",
+    "concurrently": "^8.2.1",
+    "typescript": "^5.2.2"
   }
 }
