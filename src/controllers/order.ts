@@ -1,9 +1,9 @@
-import { processResponse } from '../middleware/handler/promise-controller';
+import { processPaginationResponse, processResponse } from '../middleware/handler/promise-controller';
 import { Order } from '../models/order';
 import { Product } from '../models/product';
 import { User } from '../models/user';
-import { MiddlewareModel } from '../util/models/controller';
-import { sendOrderInfoToMail } from '../util/transport-mailer';
+import { sendOrderInfoToMail } from '../services/transport-mailer';
+import { MiddlewareModel } from '../util/models/middleware.model';
 
 export const createOrder: MiddlewareModel = (req, res, next) => {
   let user;
@@ -57,33 +57,36 @@ export const createOrder: MiddlewareModel = (req, res, next) => {
       order.save()
         .then((r) => {
           user.clearCart();
-          res.send(r.id);
+          res.json(r.id);
           const { email, fullName, address, phone } = req.body;
           sendOrderInfoToMail(email, fullName, phone, address, products);
         })
         .catch(err => console.log(err));
     })
     .catch(err => console.log(err));
+
+
 };
 
 export const getOrders: MiddlewareModel = (req, res, next) => {
-  console.log('getAllOrders');
-  processResponse(req, res, next,
+  console.log('getOrders');
+  console.log('req.query ', req.query);
+  processPaginationResponse(req, res, next,
     Order.find()
   );
 };
 
 export const getOrder: MiddlewareModel = (req, res, next) => {
   console.log('getOrder');
-  const { orderId } = req.params;
+  const { id } = req.params;
 
   processResponse(req, res, next,
-    Order.findById(orderId)
+    Order.findById(id)
   );
 };
 
 export const getOrdersByUser: MiddlewareModel = (req, res, next) => {
-  console.log('getOrders');
+  console.log('getOrdersByUser');
   const { userId } = req.body;
 
   processResponse(req, res, next,

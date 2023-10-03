@@ -18,13 +18,13 @@ router.post(PRODUCT_PATH,
   validateProductForCreating(),
   createProduct);
 
-router.patch(PRODUCT_PATH,
+router.put(PRODUCT_PATH + DYNAMIC_ID_ROUTE,
   isAuthentizated,
   validateProductForUpdating(),
   updateProduct
 );
 
-router.delete(PRODUCT_PATH,
+router.delete(PRODUCT_PATH + DYNAMIC_ID_ROUTE,
   isAuthentizated,
   deleteProduct
 );

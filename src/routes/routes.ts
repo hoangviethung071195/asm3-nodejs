@@ -5,13 +5,17 @@ import { chatRoomRoutes } from './chat-room';
 import { orderRoutes } from './order';
 import { productRoutes } from './product';
 import { userRoutes } from './user';
-const router = Router();
+import { fileRoutes } from './file';
+import { globalRoutes } from './global';
 
+const router = Router();
 router.use(authenticationRoutes);
 router.use(cartRoutes);
 router.use(chatRoomRoutes);
 router.use(orderRoutes);
 router.use(productRoutes);
 router.use(userRoutes);
+router.use(fileRoutes);
+router.use(globalRoutes);
 
 export const routes = router; 

@@ -1,4 +1,4 @@
-import { MiddlewareModel } from '../../util/models/controller';
+import { MiddlewareModel } from '../../util/models/middleware.model';
 
 export const setAccessControl: MiddlewareModel = (req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');

@@ -1,58 +1,65 @@
-import { Product } from '../models/product';
 import { processPaginationResponse, processResponse } from '../middleware/handler/promise-controller';
-import { getBase64URL } from '../util/file';
-import { MiddlewareModel } from '../util/models/controller';
+import { Product } from '../models/product';
+import { deleteFileInCloudStorage } from '../services/cloud-storage';
+import { getValuableFieldsObj } from '../util/helpers/object';
+import { MiddlewareModel } from '../util/models/middleware.model';
 
 export const getProducts: MiddlewareModel = async (req, res, next) => {
   console.log('getProducts');
+  const { keyword = '', category = '' } = req.query;
+  const filterQuery = getValuableFieldsObj({ title: { $regex: keyword, $options: 'i' }, category });
+
   processPaginationResponse(req, res, next,
-    Product.find()
+    Product.find(filterQuery)
   );
 };
 
 export const getProduct: MiddlewareModel = (req, res, next) => {
   console.log('getProduct');
-  const { productId } = req.params;
+  const { id } = req.params;
 
   processResponse(req, res, next,
-    Product.findById(productId)
+    Product.findById(id)
   );
 };
 
-export const createProduct: MiddlewareModel = (req, res, next) => {
+export const createProduct: MiddlewareModel = async (req, res, next) => {
   console.log('createProduct');
-  const { files } = req;
-  let newInfo = req.body;
-
-  if (files?.length === 4) {
-    newInfo.imageUrls = (files as Express.Multer.File[]).map(f => getBase64URL(f));
-  }
+  const newInfo = req.body;
 
   processResponse(req, res, next,
     Product.create(newInfo)
   );
 };
 
-export const updateProduct: MiddlewareModel = (req, res, next) => {
+export const updateProduct: MiddlewareModel = async (req, res, next) => {
   console.log('updateProduct');
-  const { files } = req;
-  const { productId } = req.body;
-  let newInfo = req.body;
+  const { id } = req.params;
+  const newInfo = req.body;
 
-  if (files?.length === 4) {
-    newInfo.imageUrls = (files as Express.Multer.File[]).map(f => getBase64URL(f));
+  if (newInfo.fileIds?.length) {
+    const product = await Product.findById(id);
+    await deleteFileInCloudStorage(product.fileIds);
   }
 
   processResponse(req, res, next,
-    Product.findByIdAndUpdate(productId, newInfo)
+    Product.findByIdAndUpdate(id, newInfo)
   );
 };
 
 export const deleteProduct: MiddlewareModel = (req, res, next) => {
   console.log('deleteProduct');
-  const { productId } = req.body;
-
+  const { id } = req.params;
   processResponse(req, res, next,
-    Product.findByIdAndDelete(productId)
+    Product.findByIdAndDelete(id), (r) => {
+      if (r) {
+        deleteFileInCloudStorage(r.fileIds)
+          .then(r => {
+            if (r) {
+              res.send(true);
+            }
+          });
+      }
+    }
   );
 };

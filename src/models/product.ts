@@ -11,7 +11,7 @@ const productSchema = new Schema({
     require: true
   },
   price: {
-    type: String,
+    type: Number,
     require: true
   },
   quantity: {
@@ -26,23 +26,7 @@ const productSchema = new Schema({
     type: String,
     require: true
   },
-  imageUrls: [String],
-  imageUrl1: {
-    type: String,
-    require: true
-  },
-  imageUrl2: {
-    type: String,
-    require: true
-  },
-  imageUrl3: {
-    type: String,
-    require: true
-  },
-  imageUrl4: {
-    type: String,
-    require: true
-  },
+  fileIds: [String],
   userId: {
     type: Schema.Types.ObjectId,
     ref: 'User',

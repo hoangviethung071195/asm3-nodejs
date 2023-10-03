@@ -3,10 +3,10 @@ import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import { User } from '../models/user';
 import { processResponse } from '../middleware/handler/promise-controller';
-import { getError } from '../util/error-object';
-import { sendMail } from '../util/transport-mailer';
 import { API_ENDPOINT } from '../util/constant/env';
-import { MiddlewareExtraParamModel, MiddlewareModel } from '../util/models/controller';
+import { MiddlewareExtraParamModel, MiddlewareModel } from '../util/models/middleware.model';
+import { getError } from '../util/helpers/error-object';
+import { sendMail } from '../services/transport-mailer';
 
 export const login: MiddlewareModel = (req, res, next) => {
   console.log('login');
@@ -15,13 +15,16 @@ export const login: MiddlewareModel = (req, res, next) => {
   processResponse(req, res, next,
     User.findOne({ email }),
     (user) => {
+      console.log('user ', user);
       if (!user) {
         next(getError(400, 'Email does not exists.'));
+        return;
       }
 
       const doMatch = bcrypt.compareSync(password, user.password);
       if (!doMatch) {
         next(getError(401, 'Wrong password!'));
+        return;
       }
 
       const { _id, role, fullName } = user;
@@ -35,17 +38,15 @@ export const login: MiddlewareModel = (req, res, next) => {
         { expiresIn: '720h' }
       );
 
-      res.send({
+      res.json({
         token,
-        userId: user._id.toString(),
-        email,
-        fullName
+        ...user._doc
       });
     }
   );
 };
 
-export const signup: MiddlewareExtraParamModel<number> = (req, res, next, role) => {
+export const signup: MiddlewareExtraParamModel<number> = (role, req, res, next) => {
   const { email, password, fullName, phone } = req.body;
 
   processResponse(req, res, next,
@@ -67,7 +68,7 @@ export const signup: MiddlewareExtraParamModel<number> = (req, res, next, role) 
 
       User
         .create(newUpdate)
-        .then(r => res.send(r));
+        .then(r => res.json(r));
 
     }
   );

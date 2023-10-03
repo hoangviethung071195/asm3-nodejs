@@ -10,7 +10,7 @@ router.get(USER_PATH + PLURAL,
   getUsers
 );
 
-router.patch(USER_PATH,
+router.put(USER_PATH,
   isAuthentizated,
   updateUser
 );

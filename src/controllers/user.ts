@@ -1,6 +1,6 @@
-import { processResponse } from '../middleware/handler/promise-controller';
+import { processPaginationResponse, processResponse } from '../middleware/handler/promise-controller';
 import { User } from '../models/user';
-import { MiddlewareModel } from '../util/models/controller';
+import { MiddlewareModel } from '../util/models/middleware.model';
 
 export const updateUser: MiddlewareModel = (req, res, next) => {
   console.log('updateUser');
@@ -11,7 +11,7 @@ export const updateUser: MiddlewareModel = (req, res, next) => {
 
 export const getUsers: MiddlewareModel = (req, res, next) => {
   console.log('getUsers');
-  processResponse(req, res, next,
+  processPaginationResponse(req, res, next,
     User.find()
   );
 };

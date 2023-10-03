@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { isAuthenticated } from '../middleware/validation/auth/authentication';
-import { getCartByUser, updateCartByUser, deleteCartByUser } from '../controllers/cart';
+import { getCartByUser, updateCartByUser, deleteProductsInCartByUser } from '../controllers/cart';
 import { CART_PATH } from '../util/constant/routes';
 
 const router = Router();
@@ -17,7 +17,7 @@ router.post(CART_PATH,
 
 router.delete(CART_PATH,
   isAuthenticated,
-  deleteCartByUser
+  deleteProductsInCartByUser
 );
 
 export const cartRoutes = router;

@@ -6,7 +6,8 @@ const chatRoomSchema = new Schema({
     content: {
       type: String,
       require: true
-    }
+    },
+    createdAt: Date
   }],
   customerId: {
     type: mongoose.Types.ObjectId,

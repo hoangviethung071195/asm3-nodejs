@@ -1,42 +1,55 @@
 import { ChatRoom } from '../models/chat-room';
 import { processResponse } from '../middleware/handler/promise-controller';
 import { io } from '../../socket';
-import { MiddlewareModel } from '../util/models/controller';
+import { MiddlewareModel } from '../util/models/middleware.model';
 
 export const sendMessage: MiddlewareModel = (req, res, next) => {
   console.log('sendMessage ');
   const { customerId, message } = req.body;
-
+  console.log('req.body ', req.body);
+  message[0].createdAt = Date.now();
   processResponse(req, res, next,
     ChatRoom.findOne({ customerId }),
-    (room: any) => {
+    async (room) => {
+      let updateRoom = null;
       if (room) {
-        room.message.push(message);
-        room.save();
+        room.message.push(message[0]);
+        updateRoom = await room.save();
       } else {
         const newRoom = new ChatRoom({
           customerId: (customerId),
-          message: [message]
+          message: message
         });
-        newRoom.save();
+        updateRoom = await newRoom.save();
       }
-      io.emit('to_employee', room);
-      io.emit('to_customer', room);
-      res.send(true);
+      console.log('room ', updateRoom);
+      io.emit('to_employee', updateRoom);
+      io.emit('to_customer', updateRoom);
+      res.json(updateRoom);
     }
   );
 };
 
 export const getChatRoom: MiddlewareModel = (req, res, next) => {
   console.log('getChatRoom');
-  const { customerId } = req.params;
+  const { id } = req.params;
 
+  processResponse(req, res, next,
+    ChatRoom.findById(id)
+  );
+};
+
+export const getChatRoomByUser: MiddlewareModel = (req, res, next) => {
+  console.log('getChatRoomByUser');
+  const { customerId } = req.body;
+  console.log('customerId ', customerId);
   processResponse(req, res, next,
     ChatRoom.findOne({ customerId })
   );
 };
 
 export const getChatRooms: MiddlewareModel = (req, res, next) => {
+  console.log('getChatRooms');
   processResponse(req, res, next,
     ChatRoom.find()
   );
@@ -45,12 +58,12 @@ export const getChatRooms: MiddlewareModel = (req, res, next) => {
 export const deleteChatRoom: MiddlewareModel = (req, res, next) => {
   console.log('deleteChatRoom');
   const { id } = req.params;
-
+  console.log('id ', id);
   processResponse(req, res, next,
     ChatRoom.findByIdAndDelete(id),
     (r) => {
       io.emit('delete_room', id);
-      res.send(r);
+      res.json(r);
     }
   );
 };

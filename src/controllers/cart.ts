@@ -1,6 +1,6 @@
 import { processResponse } from '../middleware/handler/promise-controller';
 import { User } from '../models/user';
-import { MiddlewareModel } from '../util/models/controller';
+import { MiddlewareModel } from '../util/models/middleware.model';
 
 export const getCartByUser: MiddlewareModel = async (req, res, next) => {
   const { userId } = req.body;
@@ -8,13 +8,13 @@ export const getCartByUser: MiddlewareModel = async (req, res, next) => {
   processResponse(req, res, next,
     User.findById(userId).populate('cart.items.productId'),
     (user) => {
-      const products = [...user.cart.items].map(p => {
+      const cart = [...user.cart.items].map(p => {
         return {
-          ...p._doc.productId._doc,
+          product: p._doc.productId._doc,
           quantity: p.quantity
         };
       });
-      res.send(products);
+      res.json(cart);
     }
   );
 };
@@ -27,12 +27,12 @@ export const updateCartByUser: MiddlewareModel = (req, res, next) => {
     user => {
       user
         .addToCart(productId, quantity)
-        .then(() => res.send(true));
+        .then(() => res.json(true));
     }
   );
 };
 
-export const deleteCartByUser: MiddlewareModel = (req, res, next) => {
+export const deleteProductsInCartByUser: MiddlewareModel = (req, res, next) => {
   const { productId, userId } = req.body;
 
   processResponse(req, res, next,
@@ -40,7 +40,7 @@ export const deleteCartByUser: MiddlewareModel = (req, res, next) => {
     user => {
       user
         .removeFromCart(productId)
-        .then(() => res.send(true));
+        .then(() => res.json(true));
     }
   );
 };

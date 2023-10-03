@@ -1,5 +1,5 @@
 import { createTransport } from 'nodemailer';
-import { API_ENDPOINT } from './constant/env';
+import { getStorageApiEndpoint } from '../util/helpers/file';
 
 const transport = createTransport({
   host: 'smtp.gmail.com',
@@ -7,13 +7,14 @@ const transport = createTransport({
   secure: true,
   auth: {
     user: 'hoangviethung071195@gmail.com',
-    pass: 'qysonmppaklbmxdl'
+    pass: 'flnewxytjyfxywls'
   }
 });
 
 const { sendMail } = transport;
 
 const sendOrderInfoToMail = (email: string, fullName: string, phone: string, address: string, products) => {
+  console.log('sendOrderInfoToMail');
   transport.sendMail({
     from: '"Việt Hùng Hoàng" <hoangviethung071195@gmail.com>',
     to: `${email}, ${email}`,
@@ -47,11 +48,13 @@ const sendOrderInfoToMail = (email: string, fullName: string, phone: string, add
       `
         <tr>
           <th style="border: 1px solid rgb(148, 148, 148);">${product.title}</th>
-          <th style="border: 1px solid rgb(148, 148, 148);"><img
-              width="100px"
-              src="${product.imageUrls[0].includes("://") ? product.imageUrls[0] : API_ENDPOINT + '/' + product.imageUrls[0]}"
-              alt=""
-            ></th>
+          <th style="border: 1px solid rgb(148, 148, 148);">
+          <img
+            width="100px"
+            src="${getStorageApiEndpoint() + '/' + product.fileIds[0]}"
+            alt=""
+          >
+          </th>
           <th style="border: 1px solid rgb(148, 148, 148);">${(new Intl.NumberFormat("vi-VI", { style: 'currency', currency: 'VND', })).format(product.price)}</th>
           <th style="border: 1px solid rgb(148, 148, 148);">${quantity}</th>
           <th style="border: 1px solid rgb(148, 148, 148);">${(new Intl.NumberFormat("vi-VI", { style: 'currency', currency: 'VND', })).format(quantity * product.price)}</th>
@@ -72,7 +75,7 @@ const sendOrderInfoToMail = (email: string, fullName: string, phone: string, add
 };
 
 export {
-  transport,
   sendMail,
-  sendOrderInfoToMail
+  sendOrderInfoToMail, transport
 };
+

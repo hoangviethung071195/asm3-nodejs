@@ -1,10 +1,12 @@
 import { body } from 'express-validator';
 import { User } from '../../../models/user';
-import { getBearerInfo } from '../../../util/bearer-token';
-import { MiddlewareModel } from '../../../util/models/controller';
+import { getBearerInfo } from '../../../util/helpers/bearer-token';
+import { MiddlewareModel } from '../../../util/models/middleware.model';
 
 export const isAuthenticated: MiddlewareModel = (req, res, next) => {
+  console.log('isAuthenticated');
   const bearerInfo = getBearerInfo(req, res, next);
+  console.log('next');
   next();
 };
 

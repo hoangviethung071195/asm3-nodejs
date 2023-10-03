@@ -14,8 +14,8 @@ router.post('/signup',
   signup
 );
 
-router.post('employee/signup',
-  validateSignup(),
+router.post('/signup/employee',
+  // validateSignup(),
   signup.bind(null, 2)
 );
 

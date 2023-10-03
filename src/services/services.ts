@@ -1,6 +1,6 @@
 import { json } from 'body-parser';
 import cors from 'cors';
-import multer from 'multer';
+import { customMulter } from './multer';
 
 export function getThirdParties() {
   return [
@@ -9,6 +9,5 @@ export function getThirdParties() {
       origin: true
     }),
     json(),
-    multer().array('image', 4)
   ];
 };
