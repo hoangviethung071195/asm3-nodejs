@@ -11,7 +11,7 @@ router.post('/login',
 
 router.post('/signup',
   validateSignup(),
-  signup
+  signup.bind(null, 3)
 );
 
 router.post('/signup/employee',

@@ -22,5 +22,4 @@ app.use(handleError);
 db.then(() => {
   const server = app.listen(PORT);
   connectSocket(server);
-  console.log('PORT ', PORT);
 });
