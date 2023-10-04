@@ -8,27 +8,25 @@ export const getCartByUser: MiddlewareModel = async (req, res, next) => {
   processResponse(req, res, next,
     User.findById(userId).populate('cart.items.productId'),
     (user) => {
-      const cart = [...user.cart.items].map(p => {
+      const items = user.cart.items.map(p => {
         return {
           product: p._doc.productId._doc,
           quantity: p.quantity
         };
       });
-      res.json(cart);
+      res.json(items);
     }
   );
 };
 
 export const updateCartByUser: MiddlewareModel = (req, res, next) => {
-  const { quantity, userId, productId } = req.body;
-
+  console.log('updateCartByUser');
+  const { userId, cart } = req.body;
   processResponse(req, res, next,
-    User.findById(userId),
-    user => {
-      user
-        .addToCart(productId, quantity)
-        .then(() => res.json(true));
-    }
+    User.findOneAndUpdate(
+      { _id: userId },
+      { $set: { cart } },
+    )
   );
 };
 
