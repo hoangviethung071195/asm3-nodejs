@@ -54,6 +54,7 @@ export const signup: MiddlewareExtraParamModel<number> = (role, req, res, next) 
     user => {
       if (user) {
         next(getError(400, 'Email already exists'));
+        return;
       }
 
       const hashPassword = bcrypt.hashSync(password, 12);
