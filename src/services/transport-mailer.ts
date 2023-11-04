@@ -1,12 +1,13 @@
 import { createTransport } from 'nodemailer';
 import { getStorageApiEndpoint } from '../util/helpers/file';
 
+const adminMail = 'hoangviethung071195@gmail.com';
 const transport = createTransport({
   host: 'smtp.gmail.com',
   port: 465,
   secure: true,
   auth: {
-    user: 'hoangviethung071195@gmail.com',
+    user: adminMail,
     pass: 'flnewxytjyfxywls'
   }
 });
@@ -74,8 +75,29 @@ const sendOrderInfoToMail = (email: string, fullName: string, phone: string, add
   });
 };
 
+const sendCustomerInfo = (email: string, fullName: string, message: string) => {
+  console.log('sendCustomerInfo', email);
+  return transport.sendMail({
+    from: `"${fullName}" <${email}>`,
+    to: `${adminMail}, ${adminMail}`,
+    subject: 'Customer',
+    html: `
+    <div>
+      From: ${email}
+    </div>
+    <div>
+      Full Name: ${fullName}
+    </div>
+    <div>
+      Message: ${message}
+    </div>
+    `
+  });
+};
+
 export {
   sendMail,
+  sendCustomerInfo,
   sendOrderInfoToMail, transport
 };
 
