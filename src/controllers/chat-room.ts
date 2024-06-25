@@ -6,9 +6,8 @@ import { MiddlewareModel } from '../util/models/middleware.model';
 export const sendMessage: MiddlewareModel = (req, res, next) => {
   console.log('sendMessage ');
   const { customerId, message } = req.body;
-  console.log('req.body ', req.body);
   message[0].createdAt = Date.now();
-  processResponse(req, res, next,
+  processResponse<InstanceType<typeof ChatRoom>>(req, res, next,
     ChatRoom.findOne({ customerId }),
     async (room) => {
       let updateRoom = null;

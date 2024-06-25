@@ -5,12 +5,12 @@ import { MiddlewareModel } from '../util/models/middleware.model';
 export const getCartByUser: MiddlewareModel = async (req, res, next) => {
   const { userId } = req.body;
 
-  processResponse(req, res, next,
+  processResponse<InstanceType<typeof User>>(req, res, next,
     User.findById(userId).populate('cart.items.productId'),
     (user) => {
       const items = user.cart.items.map(p => {
         return {
-          product: p._doc.productId._doc,
+          product: p.productId,
           quantity: p.quantity
         };
       });
@@ -33,7 +33,7 @@ export const updateCartByUser: MiddlewareModel = (req, res, next) => {
 export const deleteProductsInCartByUser: MiddlewareModel = (req, res, next) => {
   const { productId, userId } = req.body;
 
-  processResponse(req, res, next,
+  processResponse<InstanceType<typeof User>>(req, res, next,
     User.findById(userId),
     user => {
       user

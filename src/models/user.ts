@@ -1,6 +1,11 @@
 import mongoose, { Schema } from 'mongoose';
+import { IUser } from '../util/models/schema/user.model';
 
-const userSchema = new Schema({
+interface IUserMethods {
+  removeFromCart(this: this, productId: number): Promise<this>;
+}
+
+const userSchema = new Schema<IUser, {}, IUserMethods>({
   email: {
     type: String,
     require: true
@@ -40,21 +45,11 @@ const userSchema = new Schema({
   }
 });
 
-userSchema.methods.addToCart = function (updatedCart: { items: { productId: string; quantity: number; }[]; }) {
-  this.cart = updatedCart;
-  return this.save();
-};
-
-userSchema.methods.removeFromCart = function (productId: number) {
+userSchema.methods.removeFromCart = function (this: InstanceType<typeof User>, productId: number) {
   const updatedCartItems = this.cart.items.filter(item => {
     return item.productId.toString() !== productId.toString();
   });
   this.cart.items = updatedCartItems;
-  return this.save();
-};
-
-userSchema.methods.clearCart = function () {
-  this.cart = { items: [] };
   return this.save();
 };
 

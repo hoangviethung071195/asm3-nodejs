@@ -1,10 +1,13 @@
+import { NextFunction, Request, Response } from 'express';
+import { ParamsDictionary } from 'express-serve-static-core';
 import { validationResult } from 'express-validator';
-import { defaultPagination } from '../../util/constant/pagination';
-import { ProcessHandlerModel } from '../../util/models/middleware.model';
 import { cloneDeep } from 'lodash';
+import { ParsedQs } from 'qs';
+import { defaultPagination } from '../../util/constant/pagination';
 import { getError } from '../../util/helpers/error-object';
+import { ProcessHandlerModel } from '../../util/models/middleware.model';
 
-export const processResponse: ProcessHandlerModel = async (req, res, next, promise, callBack?, errorMessage = '') => {
+export const processResponse = async<ResType>(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>, next: NextFunction, promise: any, callBack?: (res: ResType) => void, errorMessage = '') => {
   const r = await handleProcess(req, res, next, promise, callBack, errorMessage);
   if (!callBack && r) {
     res.json(r);

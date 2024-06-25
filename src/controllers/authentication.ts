@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import { User } from '../models/user';
 import { processResponse } from '../middleware/handler/promise-controller';
-import { API_ENDPOINT } from '../util/constant/env';
+import { API_ENDPOINT, SECRET_BEARER_KEY } from '../util/constant/env';
 import { MiddlewareExtraParamModel, MiddlewareModel } from '../util/models/middleware.model';
 import { getError } from '../util/helpers/error-object';
 import { sendMail } from '../services/transport-mailer';
@@ -12,10 +12,9 @@ export const login: MiddlewareModel = (req, res, next) => {
   console.log('login');
   const { email, password } = req.body;
 
-  processResponse(req, res, next,
+  processResponse<InstanceType<typeof User>>(req, res, next,
     User.findOne({ email }),
     (user) => {
-      console.log('user ', user);
       if (!user) {
         next(getError(400, 'Email does not exists.'));
         return;
@@ -27,20 +26,20 @@ export const login: MiddlewareModel = (req, res, next) => {
         return;
       }
 
-      const { _id, role, fullName } = user;
+      const { _id, role } = user;
       const token = jwt.sign(
         {
-          email: email,
+          email,
           userId: _id.toString(),
           role
         },
-        process.env.SECRET_BEARER_KEY,
+        SECRET_BEARER_KEY,
         { expiresIn: '720h' }
       );
 
       res.json({
         token,
-        ...user._doc
+        ...user.toObject()
       });
     }
   );

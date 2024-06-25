@@ -50,7 +50,7 @@ export const updateProduct: MiddlewareModel = async (req, res, next) => {
 export const deleteProduct: MiddlewareModel = (req, res, next) => {
   console.log('deleteProduct');
   const { id } = req.params;
-  processResponse(req, res, next,
+  processResponse<InstanceType<typeof Product>>(req, res, next,
     Product.findByIdAndDelete(id), (r) => {
       if (r) {
         deleteFileInCloudStorage(r.fileIds)
